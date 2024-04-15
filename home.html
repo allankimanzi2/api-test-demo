@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+</head>
+<body>
+    <h1>Welcome to the Home Page</h1>
+
+    <div id="login-form">
+        <h2>Login</h2>
+        <form id="login-form">
+            <label for="username">Username:</label><br>
+            <input type="text" id="username" name="username"><br>
+            <label for="password">Password:</label><br>
+            <input type="password" id="password" name="password"><br><br>
+            <button type="button" onclick="login()">Login</button>
+        </form>
+        <p id="login-message"></p>
+    </div>
+
+    <script>
+        function login() {
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+
+            // Send a POST request to the login endpoint
+            fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({username: username, password: password})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.token) {
+                    // If login is successful, save the token in local storage
+                    localStorage.setItem('token', data.token);
+                    document.getElementById("login-message").innerText = "Login successful! Token saved.";
+                } else {
+                    // If login fails, display error message
+                    document.getElementById("login-message").innerText = "Login failed!";
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>
